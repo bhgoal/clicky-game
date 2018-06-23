@@ -5,13 +5,10 @@ import Scoreboard from "./components/Scoreboard";
 import friends from "./friends.json";
 import './App.css';
 
-const friendsInitial = friends;
-let clicked = [],
-current = 0,
+let current = 0,
 high = 0;
 
 class App extends Component {
-  
 
   state = {
     friends,
@@ -19,30 +16,55 @@ class App extends Component {
     high
   };
 
-  whenClicked = (id) => {
-    console.log(this.state.friends[id]);
-    if (this.state.friends[id].beenClicked === true) {
+  whenClicked = (clickedId) => {
+    const indexOfClicked = this.state.friends.findIndex(i => i.id === clickedId);
+    if (this.state.friends[indexOfClicked].beenClicked === true) {
       this.setState({ current: 0});
       this.setState(prevState => ({
         friends: prevState.friends.map(
           obj => (Object.assign(obj, { beenClicked: false }))
         )
       }));
-      console.log(this.state.friends[id].beenClicked);
+      
       console.log("You lose");
     } else {
       this.setState(prevState => ({
         friends: prevState.friends.map(
-          obj => (obj.id === id ? Object.assign(obj, { beenClicked: true }) : obj)
+          obj => (obj.id === clickedId ? Object.assign(obj, { beenClicked: true }) : obj)
         )
-      }));
+      }), this.shuffle(this.state.friends));
       
-      this.setState({ current: this.state.current + 1});
-      if (this.state.current > this.state.high) {
-        this.setState({ high: this.state.current});
-      }
-      clicked.push(id);
+      this.setState({ current: this.state.current + 1}, this.checkForHigh(this.state.current + 1));
     }
+  };
+
+  checkForHigh = (current) => {
+    console.log(current);
+    console.log(this.state.high);
+    if (current > this.state.high) {
+      console.log("new high");
+      this.setState({ high: current});
+    }
+  };
+
+  shuffle = (array) => {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    this.setState({ friends: array });
+    console.log(array);
   };
 
   render() {
@@ -59,7 +81,6 @@ class App extends Component {
                 {this.state.friends.map(friend => (
                   <Panel
                     whenClicked={this.whenClicked}
-                    beenClicked={friend.beenClicked}
                     id={friend.id}
                     key={friend.id}
                     name={friend.name}

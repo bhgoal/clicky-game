@@ -1,25 +1,14 @@
 import React, { Component } from "react";
 import "./Panel.css";
 
-class Panel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {beenClicked: this.props.beenClicked};
-  }
-  render() {
-    console.log(this.state.beenClicked);
-    return (
+const Panel = props => (
       <div onClick={() => (
-        this.props.whenClicked(this.props.id)
+        console.log(props.name),
+        props.whenClicked(props.id)
         )} className="card">
         <div className="img-container">
-          <img alt={this.props.name} src={this.props.image} />
-        </div>
-        <div className="content">
-          <strong>Beenclicked:</strong> {this.state.beenClicked}
+          <img alt={props.name} src={props.image} />
         </div>
       </div>
     );
-  }
-}
 export default Panel;
