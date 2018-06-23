@@ -19,12 +19,24 @@ class App extends Component {
     high
   };
 
-  whenClicked = (id, beenClicked) => {
-    console.log(this.state.friends[id-1]);
-    if (beenClicked === true) {
-      this.setState({ friends: friendsInitial, current: 0});
+  whenClicked = (id) => {
+    console.log(this.state.friends[id]);
+    if (this.state.friends[id].beenClicked === true) {
+      this.setState({ current: 0});
+      this.setState(prevState => ({
+        friends: prevState.friends.map(
+          obj => (Object.assign(obj, { beenClicked: false }))
+        )
+      }));
+      console.log(this.state.friends[id].beenClicked);
       console.log("You lose");
     } else {
+      this.setState(prevState => ({
+        friends: prevState.friends.map(
+          obj => (obj.id === id ? Object.assign(obj, { beenClicked: true }) : obj)
+        )
+      }));
+      
       this.setState({ current: this.state.current + 1});
       if (this.state.current > this.state.high) {
         this.setState({ high: this.state.current});
@@ -47,7 +59,7 @@ class App extends Component {
                 {this.state.friends.map(friend => (
                   <Panel
                     whenClicked={this.whenClicked}
-                    beenClicked={false}
+                    beenClicked={friend.beenClicked}
                     id={friend.id}
                     key={friend.id}
                     name={friend.name}

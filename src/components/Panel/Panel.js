@@ -10,8 +10,7 @@ class Panel extends Component {
     console.log(this.state.beenClicked);
     return (
       <div onClick={() => (
-        this.props.whenClicked(this.props.id, this.state.beenClicked),
-        this.setState({ beenClicked: true})
+        this.props.whenClicked(this.props.id)
         )} className="card">
         <div className="img-container">
           <img alt={this.props.name} src={this.props.image} />
